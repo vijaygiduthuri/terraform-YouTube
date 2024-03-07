@@ -1,17 +1,7 @@
-resource "aws_instance" "web" {
-  ami           = "ami-0e670eb768a5fc3d4"   
-  instance_type = "t2.micro"
-  security_groups = [aws_security_group.TF_SG.name]
-
-  tags = {
-    Name = "HelloWorld"
-  }
-}
-
-resource "aws_security_group" "TF_SG" {
+resource "aws_security_group" "demo_sg" {
   name        = "security group using terraform"
   description = "security group using terraform"
-  vpc_id      = "vpc-0d096b2c1d33a1aba"          # change VPC_ID
+  vpc_id      = "vpc-0d096b2c1d33a1aba"
 
   ingress {
     description      = "HTTPS"
@@ -51,4 +41,18 @@ resource "aws_security_group" "TF_SG" {
   tags = {
     Name = "TF_SG"
   }
+}
+
+resource "aws_instance" "web" {
+  ami             = "ami-03bb6d83c60fc5f7c"
+  instance_type   = "t2.micro"
+  key_name        = "mumbai"
+  vpc_security_group_ids = [aws_security_group.demo_sg.id]
+
+  tags = {
+    Name = "HelloWorld"
+  }
+
+  user_data = file("script.sh")
+
 }
